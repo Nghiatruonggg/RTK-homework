@@ -41,6 +41,20 @@ const createItems = createAsyncThunk(
   }
 );
 
+const deleteItems = createAsyncThunk(
+  "deleteItems",
+  async (deleteData, {rejectedWithValue}) => {
+    try {
+      const res = await axios.delete(
+        `https://fhplfd-3000.csb.app/mobile-products/${deleteData.id}`,
+      );
+      return deleteData.id; // return the id of the deleted
+    } catch (error) {
+      return rejectedWithValue(error);
+    }
+  }
+)
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: initialValue,
@@ -79,8 +93,24 @@ const cartSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+    builder
+      .addCase(deleteItems.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(deleteItems.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = state.items.filter((item) => item.id !== action.payload);
+      })
+
+      .addCase(deleteItems.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   },
 });
 
 export default cartSlice.reducer;
-export { listItems, createItems };
+export { listItems, createItems, deleteItems };

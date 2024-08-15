@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { listItems } from "../assets/reducers/cartSlice";
+import { deleteItems, listItems } from "../assets/reducers/cartSlice";
 
 const Listing = () => {
   const { items, loading, error } = useSelector((state) => state.cart);
@@ -11,6 +11,17 @@ const Listing = () => {
   useEffect(() => {
     dispatch(listItems());
   }, [dispatch]);
+
+  const deleteData = (id) => {
+    if (id) {
+
+      dispatch(deleteItems({id}))
+    }
+
+    else {
+      console.error("Undefined");
+    }
+  }
 
   return (
     <>
@@ -37,7 +48,7 @@ const Listing = () => {
                       <div className="flex justify-between">
                         <p className="font-bold text-l">{item.name}</p>
                         <button className="font-bold text-xl">Fix</button>
-                        <button className="font-bold text-xl">Delete</button>
+                        <button onClick={() => deleteData(item.id)} className="font-bold text-xl">Delete</button>
                       </div>
                     </div>
                   </>
