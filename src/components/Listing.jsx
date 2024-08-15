@@ -26,14 +26,13 @@ const Listing = () => {
           ) : (
             <>
               {items.map((item) => {
-                console.log(item);
                 return (
                   <>
                     <div
                       key={item.id}
                       className="column column-3 h-auto bg-[#D5ED9F]"
                     >
-                      <img src={item.mainImage} alt={item.name} />
+                      <img className="w-6/12 m-auto" src={item.mainImage} alt={item.name} />
 
                       <div className="flex justify-between">
                         <p className="font-bold text-l">{item.name}</p>
@@ -41,7 +40,6 @@ const Listing = () => {
                         <button className="font-bold text-xl">Delete</button>
                       </div>
                     </div>
-                    ;
                   </>
                 );
               })}
