@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { deleteItems, listItems } from "../assets/reducers/cartSlice";
+import Pagination from "./Pagination";
 
 const Listing = () => {
   const { items, loading, error } = useSelector((state) => state.cart);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemPerPage, setItemPerPage] = useState(9);
 
   const dispatch = useDispatch();
 
@@ -14,14 +17,17 @@ const Listing = () => {
 
   const deleteData = (id) => {
     if (id) {
-
-      dispatch(deleteItems({id}))
+      dispatch(deleteItems({ id }));
     }
-
-    else {
+    {
       console.error("Undefined");
     }
-  }
+  };
+
+  const lastItemIndex = currentPage * itemPerPage;
+  const firstItemIndex = lastItemIndex - itemPerPage;
+
+  const currentItems = items.slice(firstItemIndex, lastItemIndex);
 
   return (
     <>
@@ -36,19 +42,28 @@ const Listing = () => {
             <p>Data is Loading</p>
           ) : (
             <>
-              {items.map((item) => {
+              {currentItems.map((item) => {
                 return (
                   <>
                     <div
                       key={item.id}
                       className="column column-3 h-auto bg-[#D5ED9F]"
                     >
-                      <img className="w-6/12 m-auto" src={item.mainImage} alt={item.name} />
+                      <img
+                        className="w-6/12 m-auto"
+                        src={item.mainImage}
+                        alt={item.name}
+                      />
 
                       <div className="flex justify-between">
                         <p className="font-bold text-l">{item.name}</p>
                         <button className="font-bold text-xl">Fix</button>
-                        <button onClick={() => deleteData(item.id)} className="font-bold text-xl">Delete</button>
+                        <button
+                          onClick={() => deleteData(item.id)}
+                          className="font-bold text-xl"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
                   </>
@@ -58,6 +73,12 @@ const Listing = () => {
           )}
         </div>
       </div>
+
+      <Pagination
+        totalPage={items.length}
+        itemPerPage={itemPerPage}
+        setCurrentPage={setCurrentPage}
+      />
     </>
   );
 };
